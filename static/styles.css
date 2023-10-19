@@ -138,7 +138,7 @@
 }
 
 .chat-button {
-    background-color: #007BFF;
+    background-color: #007BFF !important;
     border: none;
     display: flex;
     align-items: center;
