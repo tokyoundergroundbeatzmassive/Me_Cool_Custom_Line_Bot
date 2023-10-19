@@ -3,7 +3,26 @@ require 'vendor/autoload.php';
 
 use GuzzleHttp\Client;
 
-require_once(dirname(__FILE__) . '/../../../wp-load.php');
+// 一般的なパス
+$common_path = dirname(__FILE__) . '/../../../wp-load.php';
+
+// Lightsailでの特別なパス
+$lightsail_path = '/opt/bitnami/wordpress/wp-load.php';
+
+// ファイルが存在するかどうかで読み込むパスを切り替える
+if (file_exists($common_path)) {
+    require_once($common_path);
+} elseif (file_exists($lightsail_path)) {
+    require_once($lightsail_path);
+} else {
+    // エラーハンドリング
+    error_log("wp-load.php could not be found in either the common or Lightsail-specific paths.");
+    if (function_exists('wp_die')) {
+        wp_die("Critical error: wp-load.php not found.");
+    } else {
+        die("Critical error: wp-load.php not found.");
+    }
+}
 
 // GuzzleHttpのクライアントを初期化
 $client = new Client(['headers' => ['Content-Type' => 'application/json; charset=utf-8']]);
